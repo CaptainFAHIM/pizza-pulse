@@ -8,6 +8,9 @@ const path = require("path");
 
 const PORT = process.env.PORT || 3300;
 
+// Assets
+app.use(express.static("public"));
+
 app.get("/", (req, res) => {
     res.render("home");
 });
