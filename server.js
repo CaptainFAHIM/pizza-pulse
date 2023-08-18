@@ -5,12 +5,68 @@ const ejs = require("ejs");
 const expressLayout = require("express-ejs-layouts");
 require("dotenv").config();
 const path = require("path");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const flash = require("express-flash");
+const MongoDbStore = require("connect-mongo");
+
+
 
 const PORT = process.env.PORT || 3300;
+const DB_URL = process.env.DB_URL;
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
+
+
+// Databse connection
+const connectDb = async () => {
+    try {
+        await mongoose.connect(DB_URL);
+        connection = mongoose.connection;
+        console.log("Successfully connected to the database!");
+    } catch (error) {
+        console.log(error.message);
+    }
+    
+}
+
+connectDb();
+
+// Session Store
+let mongoStore = MongoDbStore.create({
+    // mongooseConnection: connection,
+    // collection: "sessions"
+    collectionName: "sessions",
+    mongoUrl: DB_URL,
+    // client: mongoose.Connection.prototype.getClient()
+
+});
+
+
+// Session config
+app.use(session({
+    secret: COOKIE_SECRET,
+    resave: false,
+    store: mongoStore,             
+    saveUninitialized: false,
+    cookie: {
+    maxAge: 1000 * 60 * 60 * 24, //24 hours
+    // secure: false,
+    // httpOnly: true,
+  },
+}));
+
+app.use(flash());
+
 
 // Assets
 app.use(express.static("public"));
+app.use(express.json());
 
+// Global middleware
+app.use((req, res, next) => {
+    res.locals.session = req.session;
+    next();
+});
 
 
 // Set template engine
@@ -18,25 +74,7 @@ app.use(expressLayout);
 app.set("views", path.join(__dirname, "/resources/views"));
 app.set("view engine", "ejs");
 
-
-app.get("/", (req, res) => {
-    res.render("home");
-});
-
-app.get("/cart", (req, res) => {
-    res.render("customers/cart");
-});
-
-app.get("/login", (req, res) => {
-    res.render("auth/login");
-});
-
-app.get("/register", (req, res) => {
-    res.render("auth/register");
-});
-
-
-
+require("./routes/web")(app);
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
