@@ -23,13 +23,16 @@
   "homepage": "https://github.com/CaptainFAHIM/pizza-pulse#readme",
   "dependencies": {
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.1",
     "connect-mongo": "^5.0.0",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.3",
     "noty": "^3.2.0-beta-deprecated"
   },

@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const flash = require("express-flash");
 const MongoDbStore = require("connect-mongo");
+const cookieParser = require("cookie-parser");
 
 
 
@@ -31,13 +32,13 @@ const connectDb = async () => {
 
 connectDb();
 
+
 // Session Store
 let mongoStore = MongoDbStore.create({
     // mongooseConnection: connection,
     // collection: "sessions"
     collectionName: "sessions",
     mongoUrl: DB_URL,
-    // client: mongoose.Connection.prototype.getClient()
 
 });
 
@@ -50,8 +51,6 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
     maxAge: 1000 * 60 * 60 * 24, //24 hours
-    // secure: false,
-    // httpOnly: true,
   },
 }));
 
@@ -61,10 +60,13 @@ app.use(flash());
 // Assets
 app.use(express.static("public"));
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 // Global middleware
 app.use((req, res, next) => {
     res.locals.session = req.session;
+    res.locals.user = false;
     next();
 });
 
