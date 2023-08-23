@@ -50,7 +50,6 @@ const authController = () => {
     
                 res.cookie("jwt-login-auth", token, {httpOnly: true, maxAge: 86400000});
                 res.locals.email = email;
-                // res.redirect("/");
                 res.redirect(_getRedirectUrl(user));
 
             } catch (error) {

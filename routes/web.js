@@ -5,6 +5,7 @@ const orderController = require("../app/http/controllers/customers/orderControll
 const {authGuard, guest, validateUser} = require("../app/http/middlewares/authGuard");
 const adminOrderController = require("../app/http/controllers/admin/orderController");
 const admin = require("../app/http/middlewares/admin");
+const statusController = require("../app/http/controllers/admin/statusController");
 
 const initRoutes = (app) => {
 
@@ -21,9 +22,11 @@ const initRoutes = (app) => {
     // Customer routes
     app.post("/orders", authGuard, validateUser, orderController().store);
     app.get("/customer/orders", authGuard, validateUser, orderController().index);
+    app.get("/customer/orders/:id", authGuard, validateUser, orderController().show);
 
     // Admin routes
     app.get("/admin/orders", authGuard, admin, validateUser, adminOrderController().index);
+    app.post("/admin/order/status", authGuard, admin, validateUser, statusController().update);
 }
 
 module.exports = initRoutes;
