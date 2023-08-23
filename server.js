@@ -66,7 +66,8 @@ app.use(cookieParser());
 // Global middleware
 app.use((req, res, next) => {
     res.locals.session = req.session;
-    res.locals.user = false;
+    res.locals.user = req.user;
+    
     next();
 });
 

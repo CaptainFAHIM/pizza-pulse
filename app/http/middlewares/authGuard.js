@@ -10,8 +10,8 @@ const authGuard = (req, res, next) => {
   
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     if (decoded) {
-      res.locals.user = true;
       res.locals.name = decoded.name;
       res.locals.email = decoded.email;
       return next();
@@ -32,8 +32,8 @@ const guest = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
     if (decoded) {
-      res.locals.user = true;
       res.locals.name = decoded.name;
       res.locals.email = decoded.email;
       return res.redirect("/");
@@ -45,8 +45,32 @@ const guest = (req, res, next) => {
   
 }
 
+
+// For showing and hiding the logout button
+const validateUser = (req, res, next) => {
+  const token = req.cookies['jwt-login-auth'];
+  
+  if (!token) {
+    res.locals.user = false;
+    return next();
+  }
+  
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded) {
+      req.user = decoded;
+      res.locals.user = true;
+      return next();
+    }
+  } catch (err) {
+    // Handle the token verification error
+    return res.redirect("/login");
+  }
+}
+
 module.exports = {
   authGuard,
-  guest
+  guest,
+  validateUser
 
 };

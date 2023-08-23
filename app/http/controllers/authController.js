@@ -5,12 +5,32 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const authController = () => {
+
+    // Checking the user role
+    const _getRedirectUrl = (user) => {
+        if(user.role === "admin"){
+            return "/admin/orders";
+        } else{
+            return "/customer/orders";
+        }
+    }
+
+
+
     return {
         login(req, res){
             res.render("auth/login");
         },
         async postLogin(req, res){
             const {email, password} = req.body;
+
+            // Validate request
+            if(!email || !password){
+                req.flash("error", "All fields are required");
+                req.flash("email", email);
+                return res.redirect("/login");
+            }
+            
             try {
                 const user = await User.findOne({email});
                 if(!user){
@@ -26,11 +46,12 @@ const authController = () => {
                 }
 
 
-                const token = jwt.sign({id:user._id, name: user.name, email: user.email}, JWT_SECRET, {expiresIn:"24h"});
+                const token = jwt.sign({id:user._id, name: user.name, email: user.email, role: user.role}, JWT_SECRET, {expiresIn:"24h"});
     
                 res.cookie("jwt-login-auth", token, {httpOnly: true, maxAge: 86400000});
                 res.locals.email = email;
-                res.redirect("/");
+                // res.redirect("/");
+                res.redirect(_getRedirectUrl(user));
 
             } catch (error) {
                 req.flash("error", "Something went wrong");
