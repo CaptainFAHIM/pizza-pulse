@@ -106,7 +106,10 @@ if (alertMsg) {
     alertMsg.remove();
   }, 2000);
 }
-(0,_admin__WEBPACK_IMPORTED_MODULE_1__["default"])();
+var adminAreaPath = window.location.pathname;
+if (adminAreaPath.includes("admin")) {
+  (0,_admin__WEBPACK_IMPORTED_MODULE_1__["default"])();
+}
 
 // Change order status
 var statuses = document.querySelectorAll(".status_line");

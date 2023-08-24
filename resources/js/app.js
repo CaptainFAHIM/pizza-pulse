@@ -54,7 +54,11 @@ if(alertMsg){
     
 }
 
-initAdmin();
+let adminAreaPath = window.location.pathname;
+
+if(adminAreaPath.includes("admin")){
+    initAdmin();
+}
 
 
 // Change order status
