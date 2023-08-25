@@ -40,6 +40,10 @@ let mongoStore = MongoDbStore.create({
     // collection: "sessions"
     collectionName: "sessions",
     mongoUrl: DB_URL,
+    mongoOptions: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    },
 
 });
 
