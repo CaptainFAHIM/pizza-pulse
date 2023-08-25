@@ -10,6 +10,7 @@ const session = require("express-session");
 const flash = require("express-flash");
 const MongoDbStore = require("connect-mongo");
 const cookieParser = require("cookie-parser");
+const bodyParser = require('body-parser');
 
 
 
@@ -59,8 +60,10 @@ app.use(flash());
 
 // Assets
 app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+// app.use(express.json());
+// app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Global middleware
