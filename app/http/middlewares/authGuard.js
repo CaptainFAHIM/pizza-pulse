@@ -51,7 +51,7 @@ const validateUser = (req, res, next) => {
   const token = req.cookies['jwt-login-auth'];
   
   if (!token) {
-    res.locals.user = false;
+    res.locals.user = null;
     return next();
   }
   
@@ -59,7 +59,7 @@ const validateUser = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (decoded) {
       req.user = decoded;
-      res.locals.user = true;
+      res.locals.user = decoded;
       return next();
     }
   } catch (err) {
